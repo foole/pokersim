@@ -1,0 +1,33 @@
+Rough notes for the python files.
+
+hand.py:
+
+This will contain all the information about a poker hand and community
+cards. It will also determine the best possible hand for the hand
+object. (multiple hand object comparisons will probably be handled
+outside this class)
+
+There will be two classes: Hand and Community, each of which should be
+self explanatory.
+
+
+deck.py:
+
+This will contain a collection of cards (52, a standard deck) and will
+have methods to pull off (or deal) cards to individual hands. It will
+also deal out community cards (as well as burn cards).
+
+
+stats.py: 
+
+This is a stats collector. Here are the stats that we should collect:
+
+- hand
+- number of total hands
+- rank out of total hands (1 to n)
+- community cards (order should be preserved)
+
+
+In addition, the stats collector should read a file at startup (or open
+for writing if it doesn't exist) and load previously run results. It
+should have an option for starting over or writing to a new file.
