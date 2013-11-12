@@ -1,0 +1,4 @@
+Pokersim: a Texas Holdem poker simulator.
+
+This program will play a bunch of Texas Holdem poker hands and compile
+statistics on which hands win the most.
