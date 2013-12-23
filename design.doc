@@ -31,3 +31,9 @@ This is a stats collector. Here are the stats that we should collect:
 In addition, the stats collector should read a file at startup (or open
 for writing if it doesn't exist) and load previously run results. It
 should have an option for starting over or writing to a new file.
+
+god.py:
+
+Will probably mostly be used for debugging and initial testing. It will
+be able to see everything that the dealer sees, each player sees, and
+have an all seeing eye into the deck.

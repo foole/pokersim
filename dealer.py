@@ -24,7 +24,9 @@ class Dealer:
             for hand in self.hands:
                 hand.add_card(self.deck.get_card())
 
-    
+    def shuffle(self,shuffles):
+        self.deck.shuffle(shuffles)
+
     def print_hands(self):
         i = 1
         for hand in self.hands:
