@@ -6,7 +6,7 @@ MAX_HANDS = 10 #arbitrary
 NUM_HOLE_CARDS = 2
 
 class Dealer:
-    def __init__(self, hands=9, shuffles=7):
+    def __init__(self, hands=10, shuffles=7):
         self.deck = Deck(shuffles)
         self.hands = self.create_hands(hands)
 

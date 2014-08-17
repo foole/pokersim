@@ -22,9 +22,9 @@ if __name__ == '__main__':
     parser.add_option('-d', '--debug', dest='debug', default=False,
             help='Turn on debugging.')
     parser.add_option('-n', '--num-players', dest='players', default=5,
-            help='Number of players to deal in.')
+            type='int', help='Number of players to deal in.')
     parser.add_option('-s', '--num-shuffles', dest='shuffles', default=0,
-            help='Number of shuffles for new deck.')
+            type='int', help='Number of shuffles for new deck.')
     parser.add_option('-v', '--verbose', dest='verbose', default=False,
             help='Turn on verbosity.')
 

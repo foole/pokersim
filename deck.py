@@ -19,8 +19,8 @@ class Deck:
                 deck.append(card)
         return deck
 
-    def shuffle(self,num):
-        for i in xrange(0,num):
+    def shuffle(self, num):
+        for i in xrange(0, num):
             shuffle(self.deck)
 
     def get_card(self):
