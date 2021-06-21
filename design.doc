@@ -2,13 +2,32 @@ Rough notes for the python files.
 
 hand.py:
 
-This will contain all the information about a poker hand and community
-cards. It will also determine the best possible hand for the hand
-object. (multiple hand object comparisons will probably be handled
-outside this class)
+This will contain all the information about a poker hand. A poker hand
+can be anywhere from 2-7 cards depending on the variant.
 
-There will be two classes: Hand and Community, each of which should be
-self explanatory.
+
+table.py:
+
+A table is a collection of players, a dealer, and a deck of cards.
+
+
+community.py:
+
+This will contain all the information about the community cards. For
+starters, we will assume that it ranges from 0 - 5, but there are almost
+certainly variants that are outside that range.
+
+
+dealer.py:
+
+Will distribute cards, fill the community (if any), and determine the
+best hand of the available hands.
+
+
+rank_hand.py:
+
+It will determine the best possible hand for the hand object. (multiple
+hand object comparisons will probably be handled outside this class)
 
 
 deck.py:
@@ -18,7 +37,8 @@ have methods to pull off (or deal) cards to individual hands. It will
 also deal out community cards (as well as burn cards).
 
 
-stats.py: 
+
+stats.py:
 
 This is a stats collector. Here are the stats that we should collect:
 
