@@ -30,6 +30,12 @@ It will determine the best possible hand for the hand object. (multiple
 hand object comparisons will probably be handled outside this class)
 
 
+card.py:
+
+This will describe an individual card and will have methds to compare
+individual cards (as well as methods to stringify the card).
+
+
 deck.py:
 
 This will contain a collection of cards (52, a standard deck) and will
