@@ -1,4 +1,3 @@
-DEFAULT_ACE_HIGH = True
 SUITS = {
         'spade':    { 'name': 'Spade',      'symbol': 'S', 'value': 4 },
         'heart':    { 'name': 'Heart',      'symbol': 'H', 'value': 3 },
@@ -23,9 +22,7 @@ RANKS = {
 
 
 class Card:
-    # TODO: ace_high will always be true for now. Need to figure out how to handle when it is false
-    # and if keeping track of that here is the best place to do so
-    def __init__(self, suit, rank, ace_high=DEFAULT_ACE_HIGH):
+    def __init__(self, suit, rank):
         """
         Initializes a card, setting a suit and rank.
 
@@ -33,21 +30,9 @@ class Card:
         :type suit:             string
         :param rank:            rank of the card
         :type rank:             string
-        :param ace_high:        whether or not to treat ace as a high card
-        :type ace_high:         bool
         """
         self.suit = SUITS[suit]
         self.rank = RANKS[rank]
-        self.ace_high = ace_high
-
-
-    def __repr__(self):
-        """
-        Repsentation of the card (of the form "<rank> of <suit>s".
-
-        :rtype:                 string
-        """
-        return "{}, {}, ace_high={}".format(self.suit['name'], self.rank['name'], self.ace_high)
 
 
     def __str__(self):
@@ -64,9 +49,7 @@ class Card:
         """
         Returns true if self is less than <comp_card>. First we compare by suit:
         Spade > Heart > Diamond > Club. If suits are equal, we compare by rank:
-        King > Queen > Jack > Ten > ... > Deuce. Aces are special in that they
-        can be high or low. In that case, we check self.ace_high to determine
-        what course of action to take.
+        King > Queen > Jack > Ten > ... > Deuce.
 
         :param comp_card:       card to compare self to
         :type comp_card:        Card
@@ -99,8 +82,7 @@ class Card:
         Returns true if self is less than <comp_card>. First we compare by suit:
         Spade > Heart > Diamond > Club.
         If suits are equal, we compare by rank:
-        King > Queen > Jack > Ten > ... > Deuce. Aces are special in that they can be high or low.
-        In that case, we check self.ace_high to determine what course of action to take.
+        King > Queen > Jack > Ten > ... > Deuce.
 
         :param comp_card:       card to compare self to
         :type comp_card:        Card

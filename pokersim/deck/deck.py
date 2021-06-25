@@ -1,7 +1,6 @@
 from random import shuffle
 
 from pokersim.deck.card import (
-        DEFAULT_ACE_HIGH,
         SUITS,
         RANKS,
         Card

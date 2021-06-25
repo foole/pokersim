@@ -23,23 +23,6 @@ def test_create_cards(suit, rank, expected):
     assert card.suit == SUITS[suit]
 
 
-
-@pytest.mark.parametrize("suit, rank, ace_high", [
-    ('spade', 'ace', True),
-    ('heart', 'ace', True),
-    ('diamond', 'ace', True),
-    ('club', 'ace', True),
-    ('spade', 'two', True),
-    ('heart', 'king', True),
-    ('diamond', 'jack', True),
-    ('club', 'ten', True),
-])
-def test__repr__(suit, rank, ace_high):
-    card = Card(suit, rank)
-    expected = "{}, {}, ace_high={}".format(card.suit['name'], card.rank['name'], ace_high)
-    assert repr(card) == expected
-
-
 @pytest.mark.parametrize("suit, rank, expected", [
     ('spade', 'ace', 'Ace of Spades'),
     ('heart', 'ace', 'Ace of Hearts'),
