@@ -1,6 +1,6 @@
 from random import shuffle
 
-from pokersim.deck.card import (
+from pokersim.card import (
         SUITS,
         RANKS,
         Card

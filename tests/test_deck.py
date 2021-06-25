@@ -1,6 +1,6 @@
 import pytest
 
-from pokersim.deck.deck import (
+from pokersim.deck import (
         DEFAULT_SHUFFLES,
         Deck
 )
