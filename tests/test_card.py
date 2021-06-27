@@ -52,18 +52,26 @@ def test__str__(suit, rank, expected):
     (('club', 'ace'), ('club', 'two'), False),
     (('club', 'two'), ('club', 'ace'), True),
     (('spade', 'ace'), ('heart', 'ace'), False),
-    (('heart', 'ace'), ('spade', 'ace'), True),
+    (('heart', 'ace'), ('spade', 'ace'), False),
     (('heart', 'ace'), ('diamond', 'ace'), False),
-    (('diamond', 'ace'), ('heart', 'ace'), True),
+    (('diamond', 'ace'), ('heart', 'ace'), False),
     (('diamond', 'ace'), ('club', 'ace'), False),
-    (('club', 'ace'), ('diamond', 'ace'), True),
+    (('club', 'ace'), ('diamond', 'ace'), False),
     (('heart', 'ace'), ('diamond', 'ace'), False),
-    (('diamond', 'ace'), ('heart', 'ace'), True),
+    (('diamond', 'ace'), ('heart', 'ace'), False),
+    (('spade', 'ace'), ('heart', 'king'), False),
+    (('heart', 'king'), ('spade', 'ace'), True),
+    (('heart', 'queen'), ('diamond', 'jack'), False),
+    (('diamond', 'jack'), ('heart', 'queen'), True),
+    (('diamond', 'ten'), ('club', 'nine'), False),
+    (('club', 'nine'), ('diamond', 'ten'), True),
+    (('club', 'eight'), ('spade', 'seven'), False),
+    (('spade', 'seven'), ('club', 'eight'), True),
 ])
 def test__lt__(card1_data, card2_data, expected):
     card1 = Card(*card1_data)
     card2 = Card(*card2_data)
-    card1 < card2
+    assert (card1 < card2) == expected
 
 
 @pytest.mark.parametrize("card1_data, card2_data, expected", [
@@ -79,14 +87,22 @@ def test__lt__(card1_data, card2_data, expected):
     (('club', 'ace'), ('club', 'ace'), True),
     (('club', 'ace'), ('club', 'two'), False),
     (('club', 'two'), ('club', 'ace'), False),
-    (('spade', 'ace'), ('heart', 'ace'), False),
-    (('heart', 'ace'), ('spade', 'ace'), False),
-    (('heart', 'ace'), ('diamond', 'ace'), False),
-    (('diamond', 'ace'), ('heart', 'ace'), False),
-    (('diamond', 'ace'), ('club', 'ace'), False),
-    (('club', 'ace'), ('diamond', 'ace'), False),
-    (('heart', 'ace'), ('diamond', 'ace'), False),
-    (('diamond', 'ace'), ('heart', 'ace'), False),
+    (('spade', 'ace'), ('heart', 'ace'), True),
+    (('heart', 'ace'), ('spade', 'ace'), True),
+    (('heart', 'ace'), ('diamond', 'ace'), True),
+    (('diamond', 'ace'), ('heart', 'ace'), True),
+    (('diamond', 'ace'), ('club', 'ace'), True),
+    (('club', 'ace'), ('diamond', 'ace'), True),
+    (('heart', 'ace'), ('diamond', 'ace'), True),
+    (('diamond', 'ace'), ('heart', 'ace'), True),
+    (('spade', 'ace'), ('heart', 'king'), False),
+    (('heart', 'king'), ('spade', 'ace'), False),
+    (('heart', 'queen'), ('diamond', 'jack'), False),
+    (('diamond', 'jack'), ('heart', 'queen'), False),
+    (('diamond', 'ten'), ('club', 'nine'), False),
+    (('club', 'nine'), ('diamond', 'ten'), False),
+    (('club', 'eight'), ('spade', 'seven'), False),
+    (('spade', 'seven'), ('club', 'eight'), False),
 ])
 def test__eq__(card1_data, card2_data, expected):
     card1 = Card(*card1_data)
@@ -107,14 +123,22 @@ def test__eq__(card1_data, card2_data, expected):
     (('club', 'ace'), ('club', 'ace'), False),
     (('club', 'ace'), ('club', 'two'), True),
     (('club', 'two'), ('club', 'ace'), False),
-    (('spade', 'ace'), ('heart', 'ace'), True),
+    (('spade', 'ace'), ('heart', 'ace'), False),
     (('heart', 'ace'), ('spade', 'ace'), False),
-    (('heart', 'ace'), ('diamond', 'ace'), True),
+    (('heart', 'ace'), ('diamond', 'ace'), False),
     (('diamond', 'ace'), ('heart', 'ace'), False),
-    (('diamond', 'ace'), ('club', 'ace'), True),
+    (('diamond', 'ace'), ('club', 'ace'), False),
     (('club', 'ace'), ('diamond', 'ace'), False),
-    (('heart', 'ace'), ('diamond', 'ace'), True),
+    (('heart', 'ace'), ('diamond', 'ace'), False),
     (('diamond', 'ace'), ('heart', 'ace'), False),
+    (('spade', 'ace'), ('heart', 'king'), True),
+    (('heart', 'king'), ('spade', 'ace'), False),
+    (('heart', 'queen'), ('diamond', 'jack'), True),
+    (('diamond', 'jack'), ('heart', 'queen'), False),
+    (('diamond', 'ten'), ('club', 'nine'), True),
+    (('club', 'nine'), ('diamond', 'ten'), False),
+    (('club', 'eight'), ('spade', 'seven'), True),
+    (('spade', 'seven'), ('club', 'eight'), False),
 ])
 def test__gt__(card1_data, card2_data, expected):
     card1 = Card(*card1_data)
