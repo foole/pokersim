@@ -47,8 +47,7 @@ class Card:
 
     def __lt__(self, comp_card):
         """
-        Returns true if self is less than <comp_card>. First we compare by suit:
-        Spade > Heart > Diamond > Club. If suits are equal, we compare by rank:
+        Returns true if self is less than <comp_card>.  We compare by rank:
         King > Queen > Jack > Ten > ... > Deuce.
 
         :param comp_card:       card to compare self to
@@ -57,15 +56,12 @@ class Card:
         :return:                True if self less than <card>, otherwise False.
         :rtype:                 bool
         """
-        if self.suit['value'] == comp_card.suit['value']:
-            return self.rank['value'] < comp_card.rank['value']
-        else:
-            return self.suit['value'] < comp_card.suit['value']
+        return self.rank['value'] < comp_card.rank['value']
 
 
     def __eq__(self, comp_card):
         """
-        Returns true if self is equal to <comp_card>. This means that both suit and rank must match.
+        Returns true if self is equal to <comp_card>. This means that ranks must match.
 
         :param comp_card:       card to compare self to
         :type comp_card:        Card
@@ -73,15 +69,12 @@ class Card:
         :return:                True if self equal to <comp_card>, otherwise False.
         :rtype:                 bool
         """
-        return (self.suit['value'] == comp_card.suit['value'] and
-                self.rank['value'] == comp_card.rank['value'])
+        return (self.rank['value'] == comp_card.rank['value'])
 
 
     def __gt__(self, comp_card):
         """
-        Returns true if self is less than <comp_card>. First we compare by suit:
-        Spade > Heart > Diamond > Club.
-        If suits are equal, we compare by rank:
+        Returns true if self is less than <comp_card>. We compare by rank:
         King > Queen > Jack > Ten > ... > Deuce.
 
         :param comp_card:       card to compare self to
@@ -90,10 +83,7 @@ class Card:
         :return:                True if self greater than <comp_card>, otherwise False.
         :rtype:                 bool
         """
-        if self.suit['value'] == comp_card.suit['value']:
-            return self.rank['value'] > comp_card.rank['value']
-        else:
-            return self.suit['value'] > comp_card.suit['value']
+        return self.rank['value'] > comp_card.rank['value']
 
 
     def get_symbol(self):
