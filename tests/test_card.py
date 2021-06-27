@@ -120,3 +120,50 @@ def test__gt__(card1_data, card2_data, expected):
     card1 = Card(*card1_data)
     card2 = Card(*card2_data)
     assert (card1 > card2) == expected
+
+
+@pytest.mark.parametrize("card_data, expected", [
+    (('spade', 'ace'), "AS"),
+    (('spade', 'king'), "KS"),
+    (('spade', 'nine'), "9S"),
+    (('spade', 'five'), "5S"),
+    (('heart', 'ace'), "AH"),
+    (('heart', 'queen'), "QH"),
+    (('heart', 'eight'), "8H"),
+    (('heart', 'four'), "4H"),
+    (('diamond', 'ace'), "AD"),
+    (('diamond', 'jack'), "JD"),
+    (('diamond', 'seven'), "7D"),
+    (('diamond', 'three'), "3D"),
+    (('club', 'ace'), "AC"),
+    (('club', 'ten'), "TC"),
+    (('club', 'six'), "6C"),
+    (('club', 'two'), "2C"),
+])
+def test_get_symbol(card_data, expected):
+    card = Card(*card_data)
+    assert card.get_symbol() == expected
+
+
+
+@pytest.mark.parametrize("card_data, expected", [
+    (('spade', 'ace'),      {'suit': SUITS['spade'], 'rank': RANKS['ace']}),
+    (('spade', 'king'),     {'suit': SUITS['spade'], 'rank': RANKS['king']}),
+    (('spade', 'nine'),     {'suit': SUITS['spade'], 'rank': RANKS['nine']}),
+    (('spade', 'five'),     {'suit': SUITS['spade'], 'rank': RANKS['five']}),
+    (('heart', 'ace'),      {'suit': SUITS['heart'], 'rank': RANKS['ace']}),
+    (('heart', 'queen'),    {'suit': SUITS['heart'], 'rank': RANKS['queen']}),
+    (('heart', 'eight'),    {'suit': SUITS['heart'], 'rank': RANKS['eight']}),
+    (('heart', 'four'),     {'suit': SUITS['heart'], 'rank': RANKS['four']}),
+    (('diamond', 'ace'),    {'suit': SUITS['diamond'], 'rank': RANKS['ace']}),
+    (('diamond', 'jack'),   {'suit': SUITS['diamond'], 'rank': RANKS['jack']}),
+    (('diamond', 'seven'),  {'suit': SUITS['diamond'], 'rank': RANKS['seven']}),
+    (('diamond', 'three'),  {'suit': SUITS['diamond'], 'rank': RANKS['three']}),
+    (('club', 'ace'),       {'suit': SUITS['club'], 'rank': RANKS['ace']}),
+    (('club', 'ten'),       {'suit': SUITS['club'], 'rank': RANKS['ten']}),
+    (('club', 'six'),       {'suit': SUITS['club'], 'rank': RANKS['six']}),
+    (('club', 'two'),       {'suit': SUITS['club'], 'rank': RANKS['two']}),
+])
+def test_get_card(card_data, expected):
+    card = Card(*card_data)
+    assert card.get_card() == expected

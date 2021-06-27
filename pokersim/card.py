@@ -94,3 +94,23 @@ class Card:
             return self.rank['value'] > comp_card.rank['value']
         else:
             return self.suit['value'] > comp_card.suit['value']
+
+
+    def get_symbol(self):
+        """
+        Get the card represented as a two character "<rank><suit>" string.
+
+        :return:                short representation of card of the form "<rank><string>"
+        :rtype:                 string
+        """
+        return "{}{}".format(self.rank['symbol'], self.suit['symbol'])
+
+
+    def get_card(self):
+        """
+        Get the card in a way that will be useable (i.e., a dict with a keys suit, rank).
+
+        :return:                a useful representation of the card
+        :rtype:                 dict
+        """
+        return { 'suit': self.suit, 'rank': self.rank }
