@@ -7,26 +7,33 @@ DEFAULT_RIVER_SIZE = 1
 
 
 class Dealer:
-    def __init__(self):
+    def __init__(self, table):
         """
         Initialize a dealer. Dealer has a deck of cards and keeps track of
         players, and community cards.
         """
-        pass
+        self.table = table
+        self.deck = Deck()
+        self.community  = []
+        self.muck = []
+        self.hands = {name: [] for name in table.players()}
+        self.hand_size = table.get_hand_size()
 
 
     def deal(self):
         """
         Deal cards to each of the players.
         """
-        pass
+        for _ in range(self.hand_size):
+            for player in self.players:
+                player.append(self.deck.get_card())
 
 
     def burn_card(self):
         """
         Burn a card into the muck.
         """
-        pass
+        muck.append(self.deck.get_card())
 
 
     def get_community(self):
@@ -36,7 +43,7 @@ class Dealer:
         :return:                    community cards
         :rtype:                     list
         """
-        pass
+        return self.community()
 
 
     def flop(self, flop_size=DEFAULT_FLOP_SIZE):
@@ -46,7 +53,8 @@ class Dealer:
         :param flop_size:           number of cards to flop
         :type flop_size:            int
         """
-        pass
+        for _ in flop_size:
+            self.community.append(self.deck.get_card())
 
 
     def turn(self, turn_size=DEFAULT_TURN_SIZE):
@@ -56,7 +64,8 @@ class Dealer:
         :param turn_size:           number of cards in the turn
         :type turn_size:            int
         """
-        pass
+        for _ in turn_size:
+            self.community.append(self.deck.get_card())
 
 
     def river(self, river_size=DEFAULT_RIVER_SIZE):
@@ -66,7 +75,8 @@ class Dealer:
         :param river_size:          number of cards in the river
         :type river_size:           int
         """
-        pass
+        for _ in river_size:
+            self.community.append(self.deck.get_card())
 
 
     def get_hands(self):
@@ -76,7 +86,7 @@ class Dealer:
         :return:                    best hand for each player
         :rtype;                     dict (name of player, hand, hand label)
         """
-        pass
+        return self.hands
 
 
     def get_best_hand(self):
