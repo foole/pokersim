@@ -72,7 +72,7 @@ def test_shuffle(num_shuffles):
         previous = current
 
 
-def get_card():
+def test_get_card():
     deck = Deck()
     expected_length = 52
     for expected_card in EXPECTED_DECK_SYMBOLS:
