@@ -1,23 +1,23 @@
 SUITS = {
-        'spade':    { 'name': 'Spade',      'symbol': 'S', 'value': 4 },
-        'heart':    { 'name': 'Heart',      'symbol': 'H', 'value': 3 },
+        'club':     { 'name': 'Club',       'symbol': 'C', 'value': 1 },
         'diamond':  { 'name': 'Diamond',    'symbol': 'D', 'value': 2 },
-        'club':     { 'name': 'Club',       'symbol': 'C', 'value': 1 }
+        'heart':    { 'name': 'Heart',      'symbol': 'H', 'value': 3 },
+        'spade':    { 'name': 'Spade',      'symbol': 'S', 'value': 4 }
 }
 RANKS = {
-        'ace':      { 'name': 'Ace',    'symbol': 'A', 'value': 14 },
-        'king':     { 'name': 'King',   'symbol': 'K', 'value': 13 },
-        'queen':    { 'name': 'Queen',  'symbol': 'Q', 'value': 12 },
-        'jack':     { 'name': 'Jack',   'symbol': 'J', 'value': 11 },
-        'ten':      { 'name': 'Ten',    'symbol': 'T', 'value': 10 },
-        'nine':     { 'name': 'Nine',   'symbol': '9', 'value': 9  },
-        'eight':    { 'name': 'Eight',  'symbol': '8', 'value': 8  },
-        'seven':    { 'name': 'Seven',  'symbol': '7', 'value': 7  },
-        'six':      { 'name': 'Six',    'symbol': '6', 'value': 6  },
-        'five':     { 'name': 'Five',   'symbol': '5', 'value': 5  },
-        'four':     { 'name': 'Four',   'symbol': '4', 'value': 4  },
-        'three':    { 'name': 'Three',  'symbol': '3', 'value': 3  },
         'two':      { 'name': 'Two',    'symbol': '2', 'value': 2  },
+        'three':    { 'name': 'Three',  'symbol': '3', 'value': 3  },
+        'four':     { 'name': 'Four',   'symbol': '4', 'value': 4  },
+        'five':     { 'name': 'Five',   'symbol': '5', 'value': 5  },
+        'six':      { 'name': 'Six',    'symbol': '6', 'value': 6  },
+        'seven':    { 'name': 'Seven',  'symbol': '7', 'value': 7  },
+        'eight':    { 'name': 'Eight',  'symbol': '8', 'value': 8  },
+        'nine':     { 'name': 'Nine',   'symbol': '9', 'value': 9  },
+        'ten':      { 'name': 'Ten',    'symbol': 'T', 'value': 10 },
+        'jack':     { 'name': 'Jack',   'symbol': 'J', 'value': 11 },
+        'queen':    { 'name': 'Queen',  'symbol': 'Q', 'value': 12 },
+        'king':     { 'name': 'King',   'symbol': 'K', 'value': 13 },
+        'ace':      { 'name': 'Ace',    'symbol': 'A', 'value': 14 }
 }
 
 
