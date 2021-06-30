@@ -54,6 +54,9 @@ def make_players(num_players):
     return ["name{}".format(str(i+1).rjust(2, '0')) for i in range(num_players)]
 
 
+@patch('pokersim.deck.Deck', MockDeck)
+
+
 @pytest.mark.parametrize('num_players,hand_size', [
     (0, 0),
     (2, 0),
@@ -63,7 +66,6 @@ def make_players(num_players):
     (10, 2),
     (10, 5)
 ])
-@patch('pokersim.deck.Deck', MockDeck)
 def test__init__(num_players, hand_size):
     players = make_players(num_players)
     dealer = Dealer(players, hand_size)
@@ -82,16 +84,12 @@ def test__init__(num_players, hand_size):
     (10, 2),
     (10, 5)
 ])
-@patch('pokersim.deck.Deck', MockDeck)
 def test_deal(num_players, hand_size):
-    mock_table = MagicMock()
-    mock_table.players.return_value = ["name{}".format(str(i+1).rjust(2, '0')) for i in range(num_players)]
-    mock_table.hand_size.return_value = hand_size
-
-    dealer = Dealer(mock_table)
+    players = make_players(num_players)
+    dealer = Dealer(players, hand_size)
     dealer.deal()
-    assert len(dealer.hands) == num_players
-    for hand in dealer.hands:
+    assert len(dealer.players) == num_players
+    for hand in dealer.players.values():
         assert len(hand) == hand_size
     assert len(dealer.deck) == (DECK_SIZE - num_players * hand_size)
 
@@ -105,10 +103,11 @@ def test_deal(num_players, hand_size):
     (10, 5)
 ])
 def test_burn_card(num_players, hand_size):
-    dealer = Dealer()
+    players = make_players(num_players)
+    dealer = Dealer(players, hand_size)
     assert len(dealer.muck) == 0
     assert len(dealer.community) == 0
-    for hand in dealer.hands:
+    for hand in dealer.players.values():
         assert len(hand) == 0
 
     for i in range(3):
@@ -125,13 +124,17 @@ def test_burn_card(num_players, hand_size):
     (['card1', 'card2', 'card3', 'card4', 'card5'])
 ])
 def test_get_community(community):
-    dealer = Dealer()
+    players = ['player1']
+    hand_size = 0
+    dealer = Dealer(players, hand_size)
     dealer.community = community
     assert dealer.get_community == community
 
 
 def test_flop():
-    dealer = Dealer()
+    players = ['player1']
+    hand_size = 0
+    dealer = Dealer(players, hand_size)
     expected = [
         { 'suit': SUITS['spade'], 'rank': RANKS['ace'] },
         { 'suit': SUITS['spade'], 'rank': RANKS['king'] },
@@ -146,7 +149,9 @@ def test_flop():
 
 
 def test_turn():
-    dealer = Dealer()
+    players = ['player1']
+    hand_size = 0
+    dealer = Dealer(players, hand_size)
     dealer.community = ['card1', 'card2', 'card3']
     dealer.deck = dealer.deck[3:len(dealer.deck)]
     expected = [
@@ -161,7 +166,9 @@ def test_turn():
 
 
 def test_river():
-    dealer = Dealer()
+    players = ['player1']
+    hand_size = 0
+    dealer = Dealer(players, hand_size)
     dealer.community = ['card1', 'card2', 'card3', 'card4']
     dealer.deck = dealer.deck[4:len(dealer.deck)]
     expected = [
@@ -175,7 +182,7 @@ def test_river():
     assert dealer.community[-1] == expected
 
 
-@pytest.mark.parametrize("num_hands,expected", [
+@pytest.mark.parametrize("num_hands,hand", [
     (0, []),
     (2, [['card1', 'card2'], ['card3', 'card4']]),
     (4, [['card1', 'card2'], ['card3', 'card4'], ['card5', 'card6'], ['card7', 'card8']]),
@@ -183,14 +190,17 @@ def test_river():
           ['card9', 'card10'], ['card11', 'card12'], ['card13', 'card14'], ['card15', 'card16'],
           ['card17', 'card18'], ['card19', 'card20']])
 ])
-@patch('pokersim.deck.Deck')
-def test_get_hands(num_hands, expected):
-    dealer = Dealer()
+def test_get_hands(num_hands, hand):
+    hand_size = 0
+    players = make_players(num_hands)
+    dealer = Dealer(players, hand_size)
+    for player in players:
+        dealer.players[player] = hand
     assert len(dealer.deck) == DECK_SIZE
     assert len(dealer.community) == 0
     assert len(dealer.muck) == 0
-    assert len(dealer.hands) == num_hands
-    assert dealer.hands == expected
+    assert len(dealer.players) == num_hands
+    assert dealer.hands == hand
 
 
 @pytest.mark.parametrize("hands_sym, expected_syms", [
@@ -224,9 +234,11 @@ def test_get_hands(num_hands, expected):
     ((['TC', 'JC', 'AC', 'KC', 'QC'], ['KH', 'QH', '9H', 'JH', 'TH']), (['TC', 'JC', 'AC', 'KC', 'QC']))
 ])
 def test_get_best_hand(hands_sym, expected_syms):
+    players = make_players(len(hands_sym))
+    hand_size = len(hands_sym[0])
     hands = [get_hand(hand_sym) for hand_sym in hands_sym]
     expected = [get_hand(expected_sym) for expected_sym in expected_syms]
-    dealer = Dealer()
+    dealer = Dealer(players, hand_size)
     dealer.hands = hands
     best_hands = dealer.best_hand()
     sort(best_hands)

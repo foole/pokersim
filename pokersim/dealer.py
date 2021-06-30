@@ -12,7 +12,7 @@ class Dealer:
         Initialize a dealer. Dealer has a deck of cards and keeps track of
         players, and community cards.
         """
-        self.players = players
+        self.players = {name: [] for name in players}
         self.hand_size = hand_size
         self.deck = Deck()
         self.community  = []
