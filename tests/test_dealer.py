@@ -1,5 +1,8 @@
 import pytest
 
+from unittest.mock import MagicMock
+from unittest.mock import patch
+
 from pokersim.dealer import Dealer
 
 DECK_SIZE = 52
@@ -24,8 +27,17 @@ SYMBOL_MAP = {
 }
 
 
-def make_test_deck(deck_size=DECK_SIZE):
-    return ["card{}".format(i+1) for i in range(DECK_SIZE)]
+class MockDeck():
+    def __init__(self):
+        self.deck = self.make_test_deck()
+
+
+    def get_card(self):
+        self.deck.pop()
+
+
+    def make_test_deck(deck_size=DECK_SIZE):
+        return ["card{}".format(i+1) for i in range(DECK_SIZE, 0, -1)]
 
 
 def card_from_sym(card):
@@ -38,11 +50,28 @@ def get_hand(hand_sym):
     return [card_from_sym(card) for card in hand_sym]
 
 
-# TODO: add mock for Deck, which instead returns output from make_test_deck
-def test__init__():
-    dealer = Dealer()
+def make_players(num_players):
+    return ["name{}".format(str(i+1).rjust(2, '0')) for i in range(num_players)]
+
+
+@pytest.mark.parametrize('num_players,hand_size', [
+    (0, 0),
+    (2, 0),
+    (2, 2),
+    (2, 5),
+    (10, 0),
+    (10, 2),
+    (10, 5)
+])
+@patch('pokersim.deck.Deck', MockDeck)
+def test__init__(num_players, hand_size):
+    players = make_players(num_players)
+    dealer = Dealer(players, hand_size)
+    assert len(dealer.players) == num_players
+    assert dealer.hand_size == hand_size
     assert len(dealer.deck) == DECK_SIZE
     assert dealer.community == []
+    assert dealer.muck == []
 
 
 @pytest.mark.parametrize("num_players, hand_size", [
@@ -53,9 +82,13 @@ def test__init__():
     (10, 2),
     (10, 5)
 ])
+@patch('pokersim.deck.Deck', MockDeck)
 def test_deal(num_players, hand_size):
-    dealer = Dealer()
-    dealer.deck = make_test_deck()
+    mock_table = MagicMock()
+    mock_table.players.return_value = ["name{}".format(str(i+1).rjust(2, '0')) for i in range(num_players)]
+    mock_table.hand_size.return_value = hand_size
+
+    dealer = Dealer(mock_table)
     dealer.deal()
     assert len(dealer.hands) == num_players
     for hand in dealer.hands:
@@ -150,9 +183,9 @@ def test_river():
           ['card9', 'card10'], ['card11', 'card12'], ['card13', 'card14'], ['card15', 'card16'],
           ['card17', 'card18'], ['card19', 'card20']])
 ])
+@patch('pokersim.deck.Deck')
 def test_get_hands(num_hands, expected):
     dealer = Dealer()
-    dealer.deck = make_test_deck()
     assert len(dealer.deck) == DECK_SIZE
     assert len(dealer.community) == 0
     assert len(dealer.muck) == 0

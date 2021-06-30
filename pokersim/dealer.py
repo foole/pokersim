@@ -7,17 +7,16 @@ DEFAULT_RIVER_SIZE = 1
 
 
 class Dealer:
-    def __init__(self, table):
+    def __init__(self, players, hand_size):
         """
         Initialize a dealer. Dealer has a deck of cards and keeps track of
         players, and community cards.
         """
-        self.table = table
+        self.players = players
+        self.hand_size = hand_size
         self.deck = Deck()
         self.community  = []
         self.muck = []
-        self.hands = {name: [] for name in table.players()}
-        self.hand_size = table.get_hand_size()
 
 
     def deal(self):
@@ -26,7 +25,7 @@ class Dealer:
         """
         for _ in range(self.hand_size):
             for player in self.players:
-                player.append(self.deck.get_card())
+                self.players[player].append(self.deck.get_card())
 
 
     def burn_card(self):
