@@ -32,7 +32,7 @@ class Dealer:
         """
         Burn a card into the muck.
         """
-        muck.append(self.deck.get_card())
+        self.muck.append(self.deck.get_card())
 
 
     def get_community(self):
@@ -42,7 +42,7 @@ class Dealer:
         :return:                    community cards
         :rtype:                     list
         """
-        return self.community()
+        return self.community
 
 
     def flop(self, flop_size=DEFAULT_FLOP_SIZE):
@@ -52,7 +52,7 @@ class Dealer:
         :param flop_size:           number of cards to flop
         :type flop_size:            int
         """
-        for _ in flop_size:
+        for _ in range(flop_size):
             self.community.append(self.deck.get_card())
 
 
@@ -63,7 +63,7 @@ class Dealer:
         :param turn_size:           number of cards in the turn
         :type turn_size:            int
         """
-        for _ in turn_size:
+        for _ in range(turn_size):
             self.community.append(self.deck.get_card())
 
 
@@ -74,7 +74,7 @@ class Dealer:
         :param river_size:          number of cards in the river
         :type river_size:           int
         """
-        for _ in river_size:
+        for _ in range(river_size):
             self.community.append(self.deck.get_card())
 
 
@@ -85,7 +85,7 @@ class Dealer:
         :return:                    best hand for each player
         :rtype;                     dict (name of player, hand, hand label)
         """
-        return self.hands
+        pass
 
 
     def get_best_hand(self):

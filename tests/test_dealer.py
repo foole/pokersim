@@ -1,9 +1,12 @@
 import pytest
 
-from unittest.mock import MagicMock
 from unittest.mock import patch
 
 from pokersim.dealer import Dealer
+from pokersim.card import (
+    SUITS,
+    RANKS
+)
 
 DECK_SIZE = 52
 SYMBOL_MAP = {
@@ -33,11 +36,15 @@ class MockDeck():
 
 
     def get_card(self):
-        self.deck.pop()
+        return self.deck.pop()
 
 
-    def make_test_deck(deck_size=DECK_SIZE):
-        return ["card{}".format(i+1) for i in range(DECK_SIZE, 0, -1)]
+    def make_test_deck(self, deck_size=DECK_SIZE):
+        return ["card{}".format(str(i).rjust(2, '0')) for i in range(DECK_SIZE, 0, -1)]
+
+
+    def __len__(self):
+        return len(self.deck)
 
 
 def card_from_sym(card):
@@ -54,9 +61,6 @@ def make_players(num_players):
     return ["name{}".format(str(i+1).rjust(2, '0')) for i in range(num_players)]
 
 
-@patch('pokersim.deck.Deck', MockDeck)
-
-
 @pytest.mark.parametrize('num_players,hand_size', [
     (0, 0),
     (2, 0),
@@ -68,12 +72,13 @@ def make_players(num_players):
 ])
 def test__init__(num_players, hand_size):
     players = make_players(num_players)
-    dealer = Dealer(players, hand_size)
-    assert len(dealer.players) == num_players
-    assert dealer.hand_size == hand_size
-    assert len(dealer.deck) == DECK_SIZE
-    assert dealer.community == []
-    assert dealer.muck == []
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        dealer = Dealer(players, hand_size)
+        assert len(dealer.players) == num_players
+        assert dealer.hand_size == hand_size
+        assert len(dealer.deck) == DECK_SIZE
+        assert dealer.community == []
+        assert dealer.muck == []
 
 
 @pytest.mark.parametrize("num_players, hand_size", [
@@ -86,12 +91,13 @@ def test__init__(num_players, hand_size):
 ])
 def test_deal(num_players, hand_size):
     players = make_players(num_players)
-    dealer = Dealer(players, hand_size)
-    dealer.deal()
-    assert len(dealer.players) == num_players
-    for hand in dealer.players.values():
-        assert len(hand) == hand_size
-    assert len(dealer.deck) == (DECK_SIZE - num_players * hand_size)
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        dealer = Dealer(players, hand_size)
+        dealer.deal()
+        assert len(dealer.players) == num_players
+        for hand in dealer.players.values():
+            assert len(hand) == hand_size
+        assert len(dealer.deck) == (DECK_SIZE - num_players * hand_size)
 
 
 @pytest.mark.parametrize("num_players, hand_size", [
@@ -104,18 +110,19 @@ def test_deal(num_players, hand_size):
 ])
 def test_burn_card(num_players, hand_size):
     players = make_players(num_players)
-    dealer = Dealer(players, hand_size)
-    assert len(dealer.muck) == 0
-    assert len(dealer.community) == 0
-    for hand in dealer.players.values():
-        assert len(hand) == 0
-
-    for i in range(3):
-        dealer.burn_card()
-        assert len(dealer.muck) == i + 1
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        dealer = Dealer(players, hand_size)
+        assert len(dealer.muck) == 0
         assert len(dealer.community) == 0
-        for hand in dealer.hands:
+        for hand in dealer.players.values():
             assert len(hand) == 0
+
+        for i in range(3):
+            dealer.burn_card()
+            assert len(dealer.muck) == i + 1
+            assert len(dealer.community) == 0
+            for hand in dealer.players.values():
+                assert len(hand) == 0
 
 @pytest.mark.parametrize("community", [
     ([]),
@@ -124,65 +131,66 @@ def test_burn_card(num_players, hand_size):
     (['card1', 'card2', 'card3', 'card4', 'card5'])
 ])
 def test_get_community(community):
-    players = ['player1']
-    hand_size = 0
-    dealer = Dealer(players, hand_size)
-    dealer.community = community
-    assert dealer.get_community == community
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        players = ['player1']
+        hand_size = 0
+        dealer = Dealer(players, hand_size)
+        dealer.community = community
+        assert dealer.get_community() == community
 
 
-def test_flop():
-    players = ['player1']
-    hand_size = 0
-    dealer = Dealer(players, hand_size)
-    expected = [
-        { 'suit': SUITS['spade'], 'rank': RANKS['ace'] },
-        { 'suit': SUITS['spade'], 'rank': RANKS['king'] },
-        { 'suit': SUITS['spade'], 'rank': RANKS['queen'] },
-    ]
-    assert len(dealer.community) == 0
-    assert len(dealer.deck) == 52
-    dealer.flop()
-    assert len(dealer.community) == 3
-    assert len(dealer.deck) == 49
-    assert dealer.community == expected
+@pytest.mark.parametrize("num_players,hand_size,expected", [
+    (1, 0, ['card01', 'card02', 'card03']),
+    (1, 2, ['card03', 'card04', 'card05']),
+    (2, 2, ['card05', 'card06', 'card07']),
+])
+def test_flop(num_players, hand_size, expected):
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        players = ["player{}".format(i) for i in range(num_players)]
+        dealer = Dealer(players, hand_size)
+        assert len(dealer.community) == 0
+        assert len(dealer.deck) == DECK_SIZE
+        dealer.deal()
+        dealer.flop()
+        assert len(dealer.community) == 3
+        assert len(dealer.deck) == (DECK_SIZE - (num_players * hand_size) - 3)
+        assert dealer.community == expected
 
 
 def test_turn():
     players = ['player1']
     hand_size = 0
-    dealer = Dealer(players, hand_size)
-    dealer.community = ['card1', 'card2', 'card3']
-    dealer.deck = dealer.deck[3:len(dealer.deck)]
-    expected = [
-        { 'suit': SUITS['spade'], 'rank': RANKS['Jack'] },
-    ]
-    assert len(dealer.community) == 3
-    assert len(dealer.deck) == 49
-    dealer.turn()
-    assert len(dealer.community) == 4
-    assert len(dealer.deck) == 48
-    assert dealer.community[-1] == expected
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        dealer = Dealer(players, hand_size)
+        dealer.community = dealer.deck.deck[len(dealer.deck.deck)-3:len(dealer.deck.deck)]
+        dealer.deck.deck = dealer.deck.deck[0:len(dealer.deck.deck)-3]
+        expected = 'card04'
+        assert len(dealer.community) == 3
+        assert len(dealer.deck) == DECK_SIZE - 3
+        dealer.turn()
+        assert len(dealer.community) == 4
+        assert len(dealer.deck) == DECK_SIZE - 4
+        assert dealer.community[-1] == expected
 
 
 def test_river():
     players = ['player1']
     hand_size = 0
-    dealer = Dealer(players, hand_size)
-    dealer.community = ['card1', 'card2', 'card3', 'card4']
-    dealer.deck = dealer.deck[4:len(dealer.deck)]
-    expected = [
-        { 'suit': SUITS['spade'], 'rank': RANKS['Ten'] },
-    ]
-    assert len(dealer.community) == 4
-    assert len(dealer.deck) == 48
-    dealer.turn()
-    assert len(dealer.community) == 5
-    assert len(dealer.deck) == 47
-    assert dealer.community[-1] == expected
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        dealer = Dealer(players, hand_size)
+        dealer.community = ['card01', 'card02', 'card03', 'card04']
+        dealer.community = dealer.deck.deck[len(dealer.deck.deck)-4:len(dealer.deck.deck)]
+        dealer.deck.deck = dealer.deck.deck[0:len(dealer.deck.deck)-4]
+        expected = 'card05'
+        assert len(dealer.community) == 4
+        assert len(dealer.deck) == DECK_SIZE - 4
+        dealer.turn()
+        assert len(dealer.community) == 5
+        assert len(dealer.deck) == DECK_SIZE - 5
+        assert dealer.community[-1] == expected
 
 
-@pytest.mark.parametrize("num_hands,hand", [
+@pytest.mark.parametrize("num_hands,hands", [
     (0, []),
     (2, [['card1', 'card2'], ['card3', 'card4']]),
     (4, [['card1', 'card2'], ['card3', 'card4'], ['card5', 'card6'], ['card7', 'card8']]),
@@ -190,17 +198,21 @@ def test_river():
           ['card9', 'card10'], ['card11', 'card12'], ['card13', 'card14'], ['card15', 'card16'],
           ['card17', 'card18'], ['card19', 'card20']])
 ])
-def test_get_hands(num_hands, hand):
-    hand_size = 0
-    players = make_players(num_hands)
-    dealer = Dealer(players, hand_size)
-    for player in players:
-        dealer.players[player] = hand
-    assert len(dealer.deck) == DECK_SIZE
-    assert len(dealer.community) == 0
-    assert len(dealer.muck) == 0
-    assert len(dealer.players) == num_hands
-    assert dealer.hands == hand
+def test_get_hands(num_hands, hands):
+    hand_size = 2
+    players = {}
+    for idx, hand in enumerate(hands):
+        players["player{}".format(str(idx+1).rjust(2, '0'))] = hand
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        dealer = Dealer([name for name in players], hand_size)
+        dealer.players = players
+        assert len(dealer.deck) == DECK_SIZE
+        assert len(dealer.community) == 0
+        assert len(dealer.muck) == 0
+        assert len(dealer.players) == num_hands
+        actual_hands = dealer.get_hands()
+        for player in players:
+            assert actual_hands[player] == players[player]
 
 
 @pytest.mark.parametrize("hands_sym, expected_syms", [
@@ -236,11 +248,12 @@ def test_get_hands(num_hands, hand):
 def test_get_best_hand(hands_sym, expected_syms):
     players = make_players(len(hands_sym))
     hand_size = len(hands_sym[0])
-    hands = [get_hand(hand_sym) for hand_sym in hands_sym]
-    expected = [get_hand(expected_sym) for expected_sym in expected_syms]
-    dealer = Dealer(players, hand_size)
-    dealer.hands = hands
-    best_hands = dealer.best_hand()
-    sort(best_hands)
-    sort(expected)
-    assert best_hands == expected
+    with patch('pokersim.dealer.Deck', return_value=MockDeck()):
+        hands = [get_hand(hand_sym) for hand_sym in hands_sym]
+        expected = [get_hand(expected_sym) for expected_sym in expected_syms]
+        dealer = Dealer(players, hand_size)
+        dealer.hands = hands
+        best_hands = dealer.best_hand()
+        sort(best_hands)
+        sort(expected)
+        assert best_hands == expected
